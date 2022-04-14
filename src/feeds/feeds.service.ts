@@ -8,10 +8,18 @@ export class FeedsService implements OnModuleInit {
 
   async onModuleInit() {
     const parser = new Parser();
-    const { items } = await parser.parseURL(
-      'https://dalconbox.tistory.com/rss',
-    );
-    this.feeds = items;
+    const { title, description, generator, link, items } =
+      await parser.parseURL('https://dalconbox.tistory.com/rss');
+    this.feeds = items.map((item: TistoryFeed) => ({
+      channel: {
+        name: title,
+        description,
+        generator,
+        link,
+      },
+      ...item,
+      description: item.content,
+    }));
   }
 
   find(page = 1) {
