@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0.28
+    container_name: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/config:/etc/mysql/conf.d
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    env_file: .env
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - backend
+    restart: always
+  cicd:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    volumes:
+      - ./jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    privileged: true # true 값으로 설정하여 컨테이너 시스템의 주요 자원에 접근할 수 있게 해준다. 기본적으론 False
+    user: root # 많은 명령어 사용을 위해 권한 조정
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - backend
+
+networks:
+  backend:
