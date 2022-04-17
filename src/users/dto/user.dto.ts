@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -8,7 +9,7 @@ import {
 } from 'class-validator';
 import { UserProvider } from '../user.entity';
 
-export class CreateUserDto {
+export class UserDto {
   @ApiProperty({
     example: 'dalcon',
     description: '아이디',
@@ -17,15 +18,6 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   username: string;
-
-  @ApiProperty({
-    example: '1028',
-    description: '비밀번호',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 
   @ApiProperty({
     example: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
@@ -45,4 +37,18 @@ export class CreateUserDto {
   @IsEnum(UserProvider)
   @IsOptional()
   provider: UserProvider;
+
+  @ApiProperty({
+    example: '2022-04-17T19:00:52.829Z',
+    description: '생성일',
+  })
+  @IsDate()
+  created_at: Date;
+
+  @ApiProperty({
+    example: '2022-04-17T19:00:52.829Z',
+    description: '수정일',
+  })
+  @IsDate()
+  updated_at: Date;
 }
