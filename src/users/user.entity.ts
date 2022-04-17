@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export type UserProvider = 'default' | 'kakao';
 
@@ -23,9 +29,9 @@ export class User {
   @Column()
   thumnail: string;
 
-  @Column({ type: 'timestamptz' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type: 'timestamptz' })
+  @UpdateDateColumn()
   updated_at: Date;
 }
