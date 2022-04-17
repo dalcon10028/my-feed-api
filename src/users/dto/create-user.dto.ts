@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
+import { UserProvider } from '../user.entity';
 
 export class CreateUserDto {
   @IsString()
@@ -12,4 +19,8 @@ export class CreateUserDto {
   @IsUrl()
   @IsOptional()
   thumnail: string;
+
+  @IsEnum(UserProvider)
+  @IsOptional()
+  provider: UserProvider;
 }

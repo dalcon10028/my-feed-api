@@ -6,22 +6,25 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export type UserProvider = 'default' | 'kakao';
+export enum UserProvider {
+  DEFAULT = 'DEFAULT',
+  KAKAO = 'KAKAO',
+}
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  username: string;
+
   @Column({
     type: 'enum',
-    enum: ['default', 'kakao'],
-    default: 'default',
+    enum: UserProvider,
+    default: UserProvider.DEFAULT,
   })
   provider: UserProvider;
-
-  @Column()
-  nickname: string;
 
   @Column()
   password: string;
