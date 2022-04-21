@@ -17,8 +17,18 @@ export class FeedsService implements OnModuleInit {
         generator,
         link,
       },
-      ...item,
-      description: item.content,
+      title: item.title,
+      author: item.creator,
+      link: item.link,
+      pubDate: item.pubDate,
+      tags: item.categories,
+      description: item.content
+        .replace(/(<([^>]+)>)/gi, '')
+        .replace(/\n/gi, '')
+        .replace(/\s\s\s/gi, '')
+        .replace(/&nbsp;/gi, '')
+        .trim()
+        .slice(0, 300),
     }));
   }
 
