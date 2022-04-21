@@ -7,8 +7,12 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtLogin } from 'src/auth/dto/jwt-login.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
@@ -52,6 +56,7 @@ export class UsersController {
     status: 401,
     description: '인가 오류',
   })
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getCurrentUser(@CurrentUser() user) {
@@ -59,6 +64,8 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '프로필 사진 업로드' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Put('upload/thumnail')
   uploadThumnail() {
     return 'upload thumnail';
