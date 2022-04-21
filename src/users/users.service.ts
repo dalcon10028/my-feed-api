@@ -30,4 +30,12 @@ export class UsersService {
     });
     return { ...user, password: null };
   }
+
+  findOne(username: string) {
+    return this.usersRepository.findOne({
+      where: {
+        username,
+      },
+    });
+  }
 }

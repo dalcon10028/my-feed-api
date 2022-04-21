@@ -1,5 +1,7 @@
 import { Body, Controller, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtLogin } from 'src/auth/dto/jwt-login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
@@ -7,7 +9,10 @@ import { UsersService } from './users.service';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   @ApiOperation({ summary: '회원가입' })
   @ApiResponse({
@@ -20,10 +25,10 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @ApiOperation({ summary: '로그인' })
+  @ApiOperation({ summary: '이메일 로그인' })
   @Post('login')
-  logIn() {
-    return 'login';
+  logIn(@Body() jwtLogin: JwtLogin) {
+    return this.authService.jwtLogin(jwtLogin);
   }
 
   @ApiOperation({ summary: '로그아웃' })
