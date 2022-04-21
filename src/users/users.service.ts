@@ -38,4 +38,10 @@ export class UsersService {
       },
     });
   }
+
+  async findOneWithoutPassword(id: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = await this.usersRepository.findOne(id);
+    return { ...rest };
+  }
 }

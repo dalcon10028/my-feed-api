@@ -1,7 +1,18 @@
-import { Body, Controller, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtLogin } from 'src/auth/dto/jwt-login.dto';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
@@ -31,10 +42,20 @@ export class UsersController {
     return this.authService.jwtLogin(jwtLogin);
   }
 
-  @ApiOperation({ summary: '로그아웃' })
-  @Post('logout')
-  logOut() {
-    return 'logout';
+  @ApiOperation({ summary: '유저 정보' })
+  @ApiResponse({
+    status: 200,
+    description: '유저 정보 받기 성공',
+    type: UserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: '인가 오류',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getCurrentUser(@CurrentUser() user) {
+    return user;
   }
 
   @ApiOperation({ summary: '프로필 사진 업로드' })
