@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -36,6 +45,23 @@ export class UsersController {
   @Post('login')
   logIn(@Body() jwtLogin: JwtLogin) {
     return this.authService.jwtLogin(jwtLogin);
+  }
+
+  @ApiOperation({ summary: '카카오 로그인' })
+  @Get('kakao/login')
+  kakaoLogIn(@Res() res) {
+    const hostName = 'kauth.kakao.com';
+    const clientId = process.env.KAKAO_REST_API_KEY;
+    const redirectUri = process.env.KAKAO_REDIRECT_URL;
+    const url = `https://${hostName}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    return res.redirect(url);
+  }
+
+  @ApiOperation({ summary: '카카오 로그인 리다이렉트' })
+  @Get('kakao/redirect')
+  async kakaoRedirect(@Query('code') code) {
+    // return code;
+    return await this.authService.kakaoLogin(code);
   }
 
   @ApiOperation({ summary: '유저 정보' })

@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -10,10 +11,11 @@ import { JwtStrategy } from './jwt/jwt.strategy';
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
-      secret: 'secretkey',
+      secret: process.env.SECRET_KEY,
       signOptions: { expiresIn: '1m' },
     }),
     forwardRef(() => UsersModule),
+    HttpModule,
   ],
   providers: [AuthService, JwtStrategy, UsersService],
   exports: [AuthService],
