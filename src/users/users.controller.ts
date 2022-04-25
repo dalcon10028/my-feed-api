@@ -5,6 +5,7 @@ import {
   Post,
   Put,
   Query,
+  Redirect,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -59,9 +60,10 @@ export class UsersController {
 
   @ApiOperation({ summary: '카카오 로그인 리다이렉트' })
   @Get('kakao/redirect')
-  async kakaoRedirect(@Query('code') code) {
-    // return code;
-    return await this.authService.kakaoLogin(code);
+  @Redirect('http://naver.com')
+  async kakaoRedirect(@Query('code') code, @Res() res) {
+    const result = await this.authService.kakaoLogin(code);
+    return res.redirect(`${process.env.CLIENT_URL}?token=${result.token}`);
   }
 
   @ApiOperation({ summary: '유저 정보' })

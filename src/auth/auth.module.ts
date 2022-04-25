@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -6,6 +5,9 @@ import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -15,7 +17,6 @@ import { JwtStrategy } from './jwt/jwt.strategy';
       signOptions: { expiresIn: '1m' },
     }),
     forwardRef(() => UsersModule),
-    HttpModule,
   ],
   providers: [AuthService, JwtStrategy, UsersService],
   exports: [AuthService],

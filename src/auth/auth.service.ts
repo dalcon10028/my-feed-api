@@ -3,16 +3,16 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtLogin } from './dto/jwt-login.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
-import { HttpService } from '@nestjs/axios';
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { map, Observable } from 'rxjs';
+import axios, { AxiosRequestConfig } from 'axios';
+import { KakaoLoginDto } from './dto/kakao-login.dto';
+import { KakaoUserDto } from './dto/kakao-user.dto';
+import { UserProvider } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private httpService: HttpService,
   ) {}
 
   async jwtLogin({ username, password }: JwtLogin) {
@@ -35,7 +35,8 @@ export class AuthService {
     return { username, token: this.jwtService.sign(payload) };
   }
 
-  kakaoLogin(code: string): Observable<AxiosResponse<any, any>> {
+  async kakaoLogin(code: string) {
+    console.log(typeof process.env.SECRET_KEY);
     const config: AxiosRequestConfig = {
       method: 'POST',
       url: 'https://kauth.kakao.com/oauth/token',
@@ -46,8 +47,34 @@ export class AuthService {
         code,
       },
     };
-    return this.httpService
+    const { access_token } = (await axios
       .request(config)
-      .pipe(map((response) => response.data));
+      .then((res) => res.data)) as KakaoLoginDto;
+
+    const { properties, id } = (await axios
+      .get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      })
+      .then((res) => res.data)) as KakaoUserDto;
+
+    let user = await this.usersService.findBy({
+      username: `KAKAO#${id}`,
+      provider: UserProvider.KAKAO,
+    });
+
+    if (!user) {
+      user = await this.usersService.createWithoutCheck({
+        username: `KAKAO#${id}`,
+        nickname: properties.nickname,
+        password: Date.now(),
+        provider: UserProvider.KAKAO,
+        thumnail: properties.thumbnail_image,
+      });
+    }
+    const payload = { username: user.username, sub: user.id };
+    return { username: user.username, token: this.jwtService.sign(payload) };
   }
 }
