@@ -27,4 +27,4 @@ Notion으로 프로젝트를 관리합니다.
 
 ## Open API (Swagger)
 
-준비중...
+### [myfeed.kro.kr](http://myfeed.kro.kr:3000/api)
