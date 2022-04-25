@@ -60,10 +60,10 @@ export class UsersController {
 
   @ApiOperation({ summary: '카카오 로그인 리다이렉트' })
   @Get('kakao/redirect')
-  @Redirect('http://naver.com')
   async kakaoRedirect(@Query('code') code, @Res() res) {
-    const result = await this.authService.kakaoLogin(code);
-    return res.redirect(`${process.env.CLIENT_URL}?token=${result.token}`);
+    const { token } = await this.authService.kakaoLogin(code);
+    // return token;
+    return res.redirect(`${process.env.CLIENT_URL}?token=${token}`);
   }
 
   @ApiOperation({ summary: '유저 정보' })

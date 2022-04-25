@@ -36,7 +36,6 @@ export class AuthService {
   }
 
   async kakaoLogin(code: string) {
-    console.log(typeof process.env.SECRET_KEY);
     const config: AxiosRequestConfig = {
       method: 'POST',
       url: 'https://kauth.kakao.com/oauth/token',
