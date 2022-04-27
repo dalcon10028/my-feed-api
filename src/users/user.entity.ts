@@ -19,6 +19,9 @@ export class User {
   @Column()
   username: string;
 
+  @Column()
+  nickname: string;
+
   @Column({
     type: 'enum',
     enum: UserProvider,

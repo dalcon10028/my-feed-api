@@ -31,11 +31,21 @@ export class UsersService {
     return { ...user, password: null };
   }
 
+  async createWithoutCheck(userDto) {
+    return await this.usersRepository.save(userDto);
+  }
+
   findOne(username: string) {
     return this.usersRepository.findOne({
       where: {
         username,
       },
+    });
+  }
+
+  findBy(where: unknown) {
+    return this.usersRepository.findOne({
+      where,
     });
   }
 
