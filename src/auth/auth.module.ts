@@ -14,7 +14,7 @@ require('dotenv').config();
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
       secret: process.env.SECRET_KEY,
-      signOptions: { expiresIn: '1m' },
+      signOptions: { expiresIn: '7d' },
     }),
     forwardRef(() => UsersModule),
   ],
