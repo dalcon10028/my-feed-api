@@ -5,7 +5,6 @@ import {
   Post,
   Put,
   Query,
-  Redirect,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +19,7 @@ import { JwtLogin } from 'src/auth/dto/jwt-login.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
+import { KakaoUserProfile } from './dto/kakao-profile.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 
@@ -49,13 +49,9 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '카카오 로그인' })
-  @Get('kakao/login')
-  kakaoLogIn(@Res() res) {
-    const hostName = 'kauth.kakao.com';
-    const clientId = process.env.KAKAO_REST_API_KEY;
-    const redirectUri = process.env.KAKAO_REDIRECT_URL;
-    const url = `https://${hostName}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
-    return res.redirect(url);
+  @Post('kakao/login')
+  kakaoLogIn(@Body() kakaoUserProfile: KakaoUserProfile) {
+    return this.authService.kakaoLogin(kakaoUserProfile);
   }
 
   @ApiOperation({ summary: '카카오 로그인 리다이렉트' })

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsDate,
   IsEnum,
   IsNotEmpty,
@@ -39,10 +40,27 @@ export class UserDto {
   provider: UserProvider;
 
   @ApiProperty({
+    example: true,
+    description: '신규 유저 여부',
+  })
+  @IsBoolean()
+  @IsOptional()
+  newbie: boolean;
+
+  @ApiProperty({
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    description: 'jwt 토큰',
+  })
+  @IsString()
+  @IsOptional()
+  token: string;
+
+  @ApiProperty({
     example: '2022-04-17T19:00:52.829Z',
     description: '생성일',
   })
   @IsDate()
+  @IsOptional()
   created_at: Date;
 
   @ApiProperty({
@@ -50,5 +68,6 @@ export class UserDto {
     description: '수정일',
   })
   @IsDate()
+  @IsOptional()
   updated_at: Date;
 }
