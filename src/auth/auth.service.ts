@@ -4,12 +4,9 @@ import { JwtLogin } from './dto/jwt-login.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { UserProvider } from 'src/users/user.entity';
-import {
-  KakaoLoginResponseDto,
-  KakaoUserAccount,
-  KakaoUserProfile,
-} from 'src/users/dto/kakao-profile.dto';
+import { KakaoUserProfile } from 'src/users/dto/kakao-profile.dto';
 import { UserDto } from 'src/users/dto/user.dto';
+import { ERROR_MSG } from 'src/common/error-messages/error-messages';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +18,7 @@ export class AuthService {
   async jwtLogin({ username, password }: JwtLogin) {
     const user = await this.usersService.findOne(username);
     if (!user) {
-      throw new UnauthorizedException('아이디나 비밀번호를 확인해주세요');
+      throw new UnauthorizedException(ERROR_MSG.ID_PW_AUTH);
     }
 
     // 패스워드 검증
@@ -31,7 +28,7 @@ export class AuthService {
     );
 
     if (!isPasswordValidated) {
-      throw new UnauthorizedException('아이디나 비밀번호를 확인해주세요');
+      throw new UnauthorizedException(ERROR_MSG.ID_PW_AUTH);
     }
 
     const payload = { username, sub: user.id };
