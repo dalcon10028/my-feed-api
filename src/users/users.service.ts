@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -47,6 +48,16 @@ export class UsersService {
     return this.usersRepository.findOne({
       where,
     });
+  }
+
+  async update(loginedUser: User, userProfileDto: UpdateUserProfileDto) {
+    const user = await this.findOne(loginedUser.username);
+    const updatedUser = await this.usersRepository.save({
+      ...user,
+      thumnail: userProfileDto.thumnail,
+    });
+    delete updatedUser.password;
+    return updatedUser;
   }
 
   async findOneWithoutPassword(id: string) {

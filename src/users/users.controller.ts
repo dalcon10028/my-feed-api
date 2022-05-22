@@ -5,7 +5,6 @@ import {
   Post,
   Put,
   Query,
-  Redirect,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +19,7 @@ import { JwtLogin } from 'src/auth/dto/jwt-login.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 
@@ -83,11 +83,11 @@ export class UsersController {
     return user;
   }
 
-  @ApiOperation({ summary: '프로필 사진 업로드' })
+  @ApiOperation({ summary: '프로필 사진 변경' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Put('upload/thumnail')
-  uploadThumnail() {
-    return 'upload thumnail';
+  uploadThumnail(@CurrentUser() user, @Body() body: UpdateUserProfileDto) {
+    return this.usersService.update(user, body);
   }
 }
